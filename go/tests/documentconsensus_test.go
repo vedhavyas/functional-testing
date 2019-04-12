@@ -274,7 +274,7 @@ func assertOkResponse(t *testing.T, response *httpexpect.Response) {
 }
 
 func getTransactionID(t *testing.T, resp *httpexpect.Object) string {
-	txID := resp.Value("header").Path("$.transaction_id").String().Raw()
+	txID := resp.Value("header").Path("$.job_id").String().Raw()
 	if txID == "" {
 		t.Error("transaction ID empty")
 	}
@@ -284,7 +284,7 @@ func getTransactionID(t *testing.T, resp *httpexpect.Object) string {
 
 func waitTillSuccess(t *testing.T, e *httpexpect.Expect, auth string, txID string) {
 	for {
-		resp := utils.AddCommonHeaders(e.GET("/transactions/"+txID), auth).Expect().Status(200).JSON().Object()
+		resp := utils.AddCommonHeaders(e.GET("/jobs/"+txID), auth).Expect().Status(200).JSON().Object()
 		status := resp.Path("$.status").String().Raw()
 		if status == "pending" {
 			time.Sleep(100 * time.Millisecond)
